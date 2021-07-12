@@ -143,5 +143,12 @@ export class AdminController{
                 enrollmentNo
             }
         })
+
+        if(_validate) {
+            res.status(200).json({
+                "success": true,
+                "message": "Data deleted successfully."
+            })
+        }
     }
 }
