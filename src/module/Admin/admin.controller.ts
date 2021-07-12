@@ -6,6 +6,7 @@ import { AdminRegisterDto } from './dto/admin-register.dto';
 import { AdminLoginDto } from './dto/admin-login.dto';
 import student from '../../models/student.model';
 import department from '../../models/department.model';
+import { StudentEditDto } from '../student/dto/student-edit.dto';
 
 export class AdminController{
     public async register(req: Request, res: Response) {
@@ -97,5 +98,50 @@ export class AdminController{
                 "message": "Failed to load data."
             })
         }
+    }
+
+    public async editStudent(req: Request, res: Response) {
+        const { enrollmentNo } = req.params
+
+        const {firstName, lastName, semester, 
+            email, mobileNo, branch } = req.dto as StudentEditDto
+
+        const _dept = await department.findOne({
+            attributes: ["id"],
+            where: {
+                deptBranch: branch
+            }
+        }) as any
+
+        const _student = await student.update({
+            firstName,
+            lastName, 
+            semester,
+            email,
+            mobileNo,
+            branch,
+            departmentId: _dept.id
+        },{ 
+            where: {
+                enrollmentNo
+            }
+        }) as any
+
+        if(_student) {
+            res.status(200).json({
+                "success": true,
+                "message": "Student Information modified successfully"
+            })
+        }
+    }
+
+    public async deleteStudent(req: Request, res: Response) {
+        const { enrollmentNo } = req.params
+
+        const _validate = await student.destroy({
+            where: {
+                enrollmentNo
+            }
+        })
     }
 }
