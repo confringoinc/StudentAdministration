@@ -13,7 +13,7 @@ const router: Router = Router()
 router.post("/register", v.validate(AdminRegisterDto), adminController.register)
 router.post("/login", v.validate(AdminLoginDto), adminController.login)
 router.get("/get-students", Middleware.pagination, adminController.getStudents)
-router.put("/edit-student", v.validate(StudentEditDto), adminController.editStudent)
-router.delete("/delete-student", adminController.deleteStudent)
+router.put("/edit-student/:enrollmentNo", v.validate(StudentEditDto), adminController.editStudent)
+router.delete("/delete-student/:enrollmentNo", adminController.deleteStudent)
 
 export const adminRoutes: Router = router

@@ -103,7 +103,7 @@ export class AdminController{
     public async editStudent(req: Request, res: Response) {
         const { enrollmentNo } = req.params
 
-        const {firstName, lastName, semester, 
+        const {firstName, lastName, semester, dob, gender,
             email, mobileNo, branch } = req.dto as StudentEditDto
 
         const _dept = await department.findOne({
@@ -117,6 +117,8 @@ export class AdminController{
             firstName,
             lastName, 
             semester,
+            dob,
+            gender,
             email,
             mobileNo,
             branch,

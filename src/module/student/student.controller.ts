@@ -85,7 +85,7 @@ export class StudentController{
 
     public async edit(req: Request, res: Response) {
         
-        const {firstName, lastName, semester, 
+        const {firstName, lastName, semester, dob, gender,
             email, mobileNo, branch } = req.dto as StudentEditDto
         
         const { enrollmentNo } = req.me
@@ -101,6 +101,8 @@ export class StudentController{
             firstName,
             lastName, 
             semester,
+            dob,
+            gender,
             email,
             mobileNo,
             branch,

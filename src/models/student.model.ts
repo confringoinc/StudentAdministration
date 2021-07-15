@@ -22,7 +22,7 @@ const student = sequelize.define('student', {
         allowNull: false
     },
     dob: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         allowNull: false
     },
     gender: {
