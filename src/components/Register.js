@@ -86,7 +86,7 @@ const Register = () => {
         }
         else {
           state.valid = false;
-          errors.mail = '\n* Email is not valid!';
+          errors.email = '\n* Email is not valid!';
         }
         break;
       case 'mobileNo':

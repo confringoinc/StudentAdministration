@@ -12,3 +12,7 @@ body {
 .ms {
   margin-left: 0 !important;
 }
+
+.text-weight-bold {
+  font-weight: bold;
+}

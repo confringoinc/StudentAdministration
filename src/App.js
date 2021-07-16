@@ -37,6 +37,10 @@ const App = () => {
       view: Edit
     },
     {
+      pageLink: '/edit/:id',
+      view: Edit
+    },
+    {
       pageLink: '/admin',
       view: Admin
     }

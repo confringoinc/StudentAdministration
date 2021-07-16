@@ -37,7 +37,10 @@ const Profile = () => {
   const editHandler = () => {
     history.push({
       pathname: '/edit',
-      state: token
+      state: {
+        token: token,
+        data: dataStudent
+      }
     });
   }
 

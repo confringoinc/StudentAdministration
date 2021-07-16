@@ -1,106 +1,99 @@
-import React, { useState, lazy, useEffect } from 'react';
-import { useLocation, useHistory } from 'react-router';
+import React, { useState, lazy } from 'react';
+import { useLocation, useHistory, useParams } from 'react-router';
 import axios from 'axios';
 import { retry } from '../utils/CommonFunctions';
 const Login = lazy(() => retry(() => import('./Login')));
 
 const Edit = () => {
   const location = useLocation();
-  const token = location.state;
-  const [dataStudent, setData] = useState([]);
-  dataStudent.errors = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    mobileNo: '',
-    semester: '',
-    branch: '',
-    dob: '',
-    gender: ''
-  };
-
-  useEffect(() => {
-    const headers = {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
+  const token = location.state.token;
+  const dataS = location.state.data;
+  const enrollment = useParams().id;
+  const [dataStudent, setState] = useState({
+    firstName: dataS.firstName,
+    lastName: dataS.lastName,
+    email: dataS.email,
+    mobileNo: dataS.mobileNo,
+    semester: dataS.semester,
+    branch: dataS.branch,
+    dob: dataS.dob,
+    gender: dataS.gender,
+    valid: false,
+    submitDisabled: true,
+    errors: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      mobileNo: '',
+      semester: '',
+      branch: '',
+      dob: '',
+      gender: ''
     }
-
-    const getData = () => {
-      axios.get('http://localhost:3000/student/get-profile', { "headers": headers })
-        .then(function (response) {
-          setData(response.data.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        })
-    }
-
-    getData();
-  }, [dataStudent, token]);
+  });
 
   const validEmailRegex =
     RegExp(/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i);
 
   const changeHandler = (e) => {
     const { name, value } = e.target;
-    let errors = dataStudent.errors;
 
     switch (name) {
       case 'firstName':
         if (value.length > 0) {
           dataStudent.valid = true;
-          errors.firstName = '';
+          dataStudent.errors.firstName = '';
         }
         else {
           dataStudent.valid = false;
-          errors.firstName = '\n* First name is required!';
+          dataStudent.errors.firstName = '\n* First name is required!';
         }
         break;
       case 'lastName':
         if (value.length > 0) {
           dataStudent.valid = true;
-          errors.lastName = ''
+          dataStudent.errors.lastName = ''
         }
         else {
           dataStudent.valid = false;
-          errors.lastName = '\n* Last name is required!'
+          dataStudent.errors.lastName = '\n* Last name is required!'
         }
         break;
       case 'email':
         if (validEmailRegex.test(value)) {
           dataStudent.valid = true;
-          errors.email = '';
+          dataStudent.errors.email = '';
         }
         else {
           dataStudent.valid = false;
-          errors.mail = '\n* Email is not valid!';
+          dataStudent.errors.email = '\n* Email is not valid!';
         }
         break;
       case 'mobileNo':
         if (value.length === 10) {
           dataStudent.valid = true;
-          errors.mobileNo = '';
+          dataStudent.errors.mobileNo = '';
         }
         else {
           dataStudent.valid = false;
-          errors.mobileNo = '\n* Mobile number is not valid!';
+          dataStudent.errors.mobileNo = '\n* Mobile number is not valid!';
         }
         break;
       case 'semester':
         if (value.length === 1) {
           dataStudent.valid = true;
-          errors.semester = '';
+          dataStudent.errors.semester = '';
         }
         else {
           dataStudent.valid = false;
-          errors.semester = '\n* Semester is not valid!';
+          dataStudent.errors.semester = '\n* Semester is not valid!';
         }
         break;
       default:
         break;
     }
 
-    setData({
+    setState({
       ...dataStudent,
       [name]: value
     });
@@ -128,7 +121,8 @@ const Edit = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    axios.put('http://localhost:3000/student/edit', dataBody, { "headers": headers })
+    if(!enrollment) {
+      axios.put('http://localhost:3000/student/edit', dataBody, { "headers": headers })
       .then(function (response) {
         if (response.data.success === true) {
           history.push({
@@ -143,10 +137,30 @@ const Edit = () => {
       .catch(function () {
         alert("Failed to edit student details...");
       });
+    }
+    else {
+      axios.put('http://localhost:3000/admin/edit-student/:' + enrollment, dataBody, { "headers": headers })
+      .then(function (response) {
+        if (response.data.success === true) {
+          console.log(response);
+          history.push({
+            pathname: '/admin',
+            state: token
+          });
+        }
+        else {
+          alert("Failed to edit student details...");
+        }
+      })
+      .catch(function () {
+        alert("Failed to edit student details...");
+      });
+    }
+    
   }
 
   return (
-    token ?
+    token || enrollment ?
       <div className="container col-md-5">
         <div className="mt-5 mb-5 card card-body p-md-5">
           <div>
@@ -184,7 +198,7 @@ const Edit = () => {
               <option value="Structural">Structural</option>
               <option value="Computer">Computer</option>
               <option value="Electronics">Electronics</option>
-              <option value="Electrica">Electrical</option>
+              <option value="Electrical">Electrical</option>
               <option value="Mechanical">Mechanical</option>
               <option value="Production">Production</option>
               <option value="Electronics and Communication">Electronics and Communication</option>
