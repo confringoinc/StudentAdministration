@@ -114,14 +114,14 @@ export class AdminController{
         }) as any
 
         const _student = await student.update({
-            firstName,
-            lastName, 
-            semester,
-            dob,
-            gender,
-            email,
-            mobileNo,
-            branch,
+            firstName:firstName,
+            lastName:lastName, 
+            semester:semester,
+            dob:dob,
+            gender:gender,
+            email:email,
+            mobileNo:mobileNo,
+            branch:branch,
             departmentId: _dept.id
         },{ 
             where: {
