@@ -1,4 +1,4 @@
-import { urlencoded } from 'body-parser';
+import { urlencoded, json} from 'body-parser';
 import express from 'express';
 import { DB } from './configs/DB';
 import helmet from 'helmet';
@@ -16,7 +16,7 @@ export class App{
         
         Cors.enable(this.app)
         this.app.use(urlencoded({ extended: true })) // parse application/x-www-form-urlencoded
-
+        this.app.use(json())
         this.app.use(helmet())
         this.app.use(morgan("tiny"))
         

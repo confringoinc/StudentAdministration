@@ -114,32 +114,38 @@ export class AdminController{
         }) as any
 
         const _student = await student.update({
-            firstName:firstName,
-            lastName:lastName, 
-            semester:semester,
-            dob:dob,
-            gender:gender,
-            email:email,
-            mobileNo:mobileNo,
-            branch:branch,
+            firstName,
+            lastName, 
+            semester,
+            dob,
+            gender,
+            email,
+            mobileNo,
+            branch,
             departmentId: _dept.id
         },{ 
             where: {
                 enrollmentNo
             }
         }) as any
+        
 
-        if(_student) {
+        if(_student[0]) {
             res.status(200).json({
                 "success": true,
                 "message": "Student Information modified successfully"
+            })
+        } else{
+            res.status(400).json({
+                "success": false,
+                "message": "Failed to edit student data"
             })
         }
     }
 
     public async deleteStudent(req: Request, res: Response) {
         const { enrollmentNo } = req.params
-
+        
         const _validate = await student.destroy({
             where: {
                 enrollmentNo
