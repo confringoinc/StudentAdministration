@@ -3,9 +3,11 @@ import { useLocation, useHistory } from 'react-router';
 import { retry } from '../utils/CommonFunctions';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useTable, usePagination, useSortBy, useGlobalFilter, useFilters } from 'react-table';
-import { FiChevronRight, FiChevronLeft, FiChevronsLeft, FiChevronsRight, FiChevronDown, FiChevronUp, FiTrash, FiEdit3 } from 'react-icons/fi';
+import { useTable, usePagination, useSortBy, useGlobalFilter, useFilters, useGroupBy, useExpanded } from 'react-table';
+import { FiChevronRight, FiChevronLeft, FiChevronsLeft, FiChevronsRight, FiChevronDown, FiChevronUp, FiTrash, FiEdit3, FiArrowDownLeft, FiX } from 'react-icons/fi';
 const Login = lazy(() => retry(() => import('./Login')));
+const BranchChart = lazy(() => retry(() => import('./BranchChart')));
+const GenderChart = lazy(() => retry(() => import('./GenderChart')));
 
 const Admin = () => {
   const location = useLocation();
@@ -73,26 +75,30 @@ const Admin = () => {
       {
         Header: '#',
         accessor: 'index',
-        Cell: ({row}) => (
-          <>{parseInt(row.id)+1}</>
+        Cell: ({ row }) => (
+          <>
+            {isNaN(row.id) ? '' : parseInt(row.id) + 1}
+          </>
         )
       },
       {
         Header: 'Edit',
         accessor: 'edit',
         Cell: ({ cell }) => (
-          <button className="btn btn-primary" onClick={() => handleEdit(cell.row.values)}>
-            <FiEdit3 />
-          </button>
+          cell.row.values.enrollmentNo ?
+            <button className="btn btn-primary" onClick={() => handleEdit(cell.row.values)}>
+              <FiEdit3 />
+            </button> : ''
         )
       },
       {
         Header: 'Delete',
         accessor: 'delete',
         Cell: ({ cell }) => (
-          <button className="btn btn-danger" onClick={() => handleDelete(cell.row.values.enrollmentNo)}>
-            <FiTrash />
-          </button>
+          cell.row.values.enrollmentNo ?
+            <button className="btn btn-danger" onClick={() => handleDelete(cell.row.values.enrollmentNo)}>
+              <FiTrash />
+            </button> : ''
         )
       },
       {
@@ -143,7 +149,7 @@ const Admin = () => {
     []
   );
 
-  const tableInstance = useTable({ columns, data: dataStudents }, useFilters, useGlobalFilter, useSortBy, usePagination);
+  const tableInstance = useTable({ columns, data: dataStudents }, useFilters, useGlobalFilter, useGroupBy, useSortBy, useExpanded, usePagination);
 
   const {
     getTableProps,
@@ -162,7 +168,7 @@ const Admin = () => {
     setPageSize,
     setGlobalFilter,
     preGlobalFilteredRows,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize }
   } = tableInstance;
 
   const [value, setValue] = useState(state.globalFilter);
@@ -206,14 +212,19 @@ const Admin = () => {
                         <span>
                           {column.isSorted
                             ? column.isSortedDesc
-                              ? <span className="ms-2">
+                              ? <span className="mx-2">
                                 <FiChevronDown />
                               </span>
-                              : <span className="ms-2">
+                              : <span className="mx-2">
                                 <FiChevronUp />
                               </span>
                             : ''}
                         </span>
+                        {column.canGroupBy ? (
+                          <span {...column.getGroupByToggleProps()}>
+                            {column.isGrouped ? <span className="mx-2"><FiX /></span> : <span className="mx-2"><FiArrowDownLeft /></span>}
+                          </span>
+                        ) : null}
                       </th>
                     ))}
                   </tr>
@@ -225,7 +236,22 @@ const Admin = () => {
                   return (
                     <tr {...row.getRowProps()}>
                       {row.cells.map(cell => {
-                        return <td className="text-nowrap" {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                        return (
+                          <td className="text-nowrap" {...cell.getCellProps()}>
+                            {cell.isGrouped ? (
+                              <>
+                                <span {...row.getToggleRowExpandedProps()}>
+                                  {row.isExpanded ? <span className="mx-2"><FiChevronUp /></span> : <span className="mx-2"><FiChevronRight /></span>}
+                                </span>{' '}
+                                {cell.render('Cell')} ({row.subRows.length})
+                              </>
+                            ) : cell.isAggregated ? (
+                              cell.render('Aggregated')
+                            ) : cell.isPlaceholder ? null : (
+                              cell.render('Cell')
+                            )}
+                          </td>
+                        )
                       })}
                     </tr>
                   )
@@ -276,6 +302,17 @@ const Admin = () => {
               <button className="btn btn-outline-primary" onClick={() => previousPage()} disabled={!canPreviousPage}><FiChevronLeft /></button>
               <button className="btn btn-outline-primary" onClick={() => nextPage()} disabled={!canNextPage}><FiChevronRight /></button>
               <button className="btn btn-outline-primary" onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}><FiChevronsRight /></button>
+            </div>
+          </div>
+          <div>
+            <h2>Data Trends</h2>
+            <div className="row">
+              <div className="col-12 col-md-6">
+                <BranchChart dataStudents={dataStudents} />
+              </div>
+              <div className="col-12 col-md-6">
+                <GenderChart dataStudents={dataStudents} />
+              </div>
             </div>
           </div>
         </div>
