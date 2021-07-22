@@ -73,7 +73,7 @@ export class AdminController{
     public async getStudents(req: Request, res: Response) {
         const { page, limit } = req.pager
 
-        const _students = await student.findAll({
+        const _students = await student.findAndCountAll({
             attributes: {
                 exclude: ["password", "departmentId"]
             },
