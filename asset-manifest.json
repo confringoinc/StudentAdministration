@@ -9,8 +9,8 @@
     "static/js/3.02e58adf.chunk.js": "/StudentAdministration/static/js/3.02e58adf.chunk.js",
     "static/js/3.02e58adf.chunk.js.map": "/StudentAdministration/static/js/3.02e58adf.chunk.js.map",
     "main.css": "/StudentAdministration/static/css/main.65f64bd9.chunk.css",
-    "main.js": "/StudentAdministration/static/js/main.9b2e8992.chunk.js",
-    "main.js.map": "/StudentAdministration/static/js/main.9b2e8992.chunk.js.map",
+    "main.js": "/StudentAdministration/static/js/main.c83e7381.chunk.js",
+    "main.js.map": "/StudentAdministration/static/js/main.c83e7381.chunk.js.map",
     "runtime-main.js": "/StudentAdministration/static/js/runtime-main.423cf0c1.js",
     "runtime-main.js.map": "/StudentAdministration/static/js/runtime-main.423cf0c1.js.map",
     "static/js/6.0db8d0cc.chunk.js": "/StudentAdministration/static/js/6.0db8d0cc.chunk.js",
@@ -48,6 +48,6 @@
     "static/js/runtime-main.423cf0c1.js",
     "static/js/6.0db8d0cc.chunk.js",
     "static/css/main.65f64bd9.chunk.css",
-    "static/js/main.9b2e8992.chunk.js"
+    "static/js/main.c83e7381.chunk.js"
   ]
 }
