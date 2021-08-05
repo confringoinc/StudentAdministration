@@ -9,9 +9,11 @@ Typescript | v4.3.5
 
 ## Step-1: Pull the git repo
 
-##  Step2: Execute following command in displayed order
+## Step-2: change variable in .env file
+
+##  Step-3: Execute following command in displayed order
 
 ### a -> npm install: to install all dependencies
 ### b -> tsc: to compile typescript file to javascript
 ### c -> cd dist: switch to dist folder
-### d -> node index: to launc project
+### d -> node index: to launch node backend server
